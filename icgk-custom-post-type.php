@@ -3,7 +3,7 @@
 Plugin Name: ICGK Custom Post Type
 Plugin URI: 
 Description: カスタムポストタイプを作成
-Version: 1.0.0
+Version: 1.0.1
 Author: ICHIGENKI
 Author URI: 
 License: 
