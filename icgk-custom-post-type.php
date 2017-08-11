@@ -6,7 +6,7 @@ Description: カスタムポストタイプを作成
 Version: 1.0.1
 Author: ICHIGENKI
 Author URI: 
-License: 
+License: GPL2
 */
 
 $page_title = 'ICGK Create/Edit Custom Post Type';
