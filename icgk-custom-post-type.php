@@ -3,7 +3,7 @@
 Plugin Name: ICGK Custom Post Type
 Plugin URI: 
 Description: カスタムポストタイプを作成
-Version: 1.0.1
+Version: 1.0.2
 Author: ICHIGENKI
 Author URI: 
 License: GPL2
@@ -103,8 +103,12 @@ function icgk_custom_post_type_options() {
     </tr>
     <tr valign="top">
     <th scope="row">表示位置</th>
-    <td><input type="text" name="icgk_post_type[<?php echo $pn; ?>][pos]" value="<?php echo $data['pos']; ?>" />
+    <td><input type="number" name="icgk_post_type[<?php echo $pn; ?>][pos]" value="<?php echo $data['pos']; ?>" min="5" max="100" step="5" />
     <p>5:投稿の下、10:メディアの下、15:リンクの下、20:固定ページの下、25:コメントの下、60:外観の下、65:プラグインの下、70:ユーザーの下、75:ツールの下、80:設定の下、100:最下部に独立させる</p></td>
+    </tr>
+    <tr valign="top">
+    <th scope="row">検索対象</th>
+    <td><label for="icgk_post_type_<?php echo $pn; ?>_srch_f"><input type="radio" name="icgk_post_type[<?php echo $pn; ?>][srch]" id="icgk_post_type_<?php echo $pn; ?>_srch_f" value="false"<?php if($data['srch'] == 'false') echo ' checked="checked"'; ?> /> する</label>　　<label for="icgk_post_type_<?php echo $pn; ?>_srch_t"><input type="radio" name="icgk_post_type[<?php echo $pn; ?>][srch]" id="icgk_post_type_<?php echo $pn; ?>_srch_t" value="true"<?php if($data['srch'] == 'true') echo ' checked="checked"'; ?> /> しない</label></td>
     </tr>
   </table>
   <hr />
@@ -126,8 +130,7 @@ function icgk_custom_post_type_options() {
     $name_val = '';
     $label_val = '';
     $slug_val = '';
-    $hier_val = '';
-    $pos_val = '';
+    $pos_val = 5;
     $submit_style = '';
   }
   $nn = $pn + 1;
@@ -156,8 +159,11 @@ function icgk_custom_post_type_options() {
         </tr>
         <tr valign="top">
         <th scope="row">表示位置</th>
-        <td><input type="text" name="icgk_post_type[<?php echo $nn; ?>][pos]" value="<?php echo $pos_val; ?>" placeholder="" />
+        <td><input type="number" name="icgk_post_type[<?php echo $nn; ?>][pos]" value="<?php echo $pos_val; ?>" min="5" max="100" step="5" />
         <p>5:投稿の下、10:メディアの下、15:リンクの下、20:固定ページの下、25:コメントの下、60:外観の下、65:プラグインの下、70:ユーザーの下、75:ツールの下、80:設定の下、100:最下部に独立させる</p></td>
+        </tr>
+        <th scope="row">検索対象</th>
+        <td><label for="icgk_post_type_<?php echo $nn; ?>_srch_f"><input type="radio" name="icgk_post_type[<?php echo $nn; ?>][srch]" id="icgk_post_type_<?php echo $nn; ?>_srch_f" value="false" checked="checked" /> する</label>　　<label for="icgk_post_type_<?php echo $nn; ?>_srch_t"><input type="radio" name="icgk_post_type[<?php echo $nn; ?>][srch]" id="icgk_post_type_<?php echo $nn; ?>_srch_t" value="true" /> しない</label></td>
         </tr>
       </table>
       <hr />
@@ -184,7 +190,6 @@ function icgk_custom_post_type_options() {
 
 // カスタム・ポストタイプを作成
 
-
 function icgk_create_custom_post_type() {
   // データベースから既存のオプション値を取得
   $option_name = 'icgk-custom-post-type';
@@ -202,6 +207,7 @@ function icgk_create_custom_post_type() {
       $slug = $data['slug'];
       $hier = $data['hier'];
       $pos = $data['pos'];
+      $srch = $data['srch'];
       if ( $slug == '' ) $slug = $name;
 
       $args = array(
@@ -212,7 +218,7 @@ function icgk_create_custom_post_type() {
         'public' => true,
         'rewrite' => array('slug' => $slug),
         'hierarchical' => $hier,
-        'menu_position' => $pos,
+        'menu_position' => intval($pos),
         'supports' => array(
           'title',
           'editor',
@@ -225,7 +231,7 @@ function icgk_create_custom_post_type() {
           //'comments',
           //'revisions'
         ),
-        'exclude_from_search' => true,
+        'exclude_from_search' => $srch,
       );
       register_post_type( $name, $args);
       $i++;
